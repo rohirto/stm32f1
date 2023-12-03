@@ -50,7 +50,7 @@
       "type": "shell",
       "label": "flash-openocd",
       // Use the telnet comunication layer provided by openocd to flash the binary onto the mcu
-      "command":"echo \"program ${workspaceFolder}/build/${workspaceFolderBasename}.bin 0x08000000\" | telnet localhost 50002; true",
+      "command":"echo \"program ${workspaceFolder}/build/${workspaceFolderBasename}.bin 0x08000000\" | telnet localhost 4444; true",
       "dependsOn": "build-debug",
       "problemMatcher": [],
       "group": {

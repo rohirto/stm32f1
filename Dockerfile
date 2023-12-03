@@ -18,22 +18,16 @@ RUN apt-get install \
     pkg-config \
     tclsh \
     telnet \
+    openocd \
+    libncurses5 \
+    python3 \
+    bzip2 \
     -y
 
 # Install arm-none-eabi compiler
-RUN wget https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/download/v9.3.1-1.1/xpack-arm-none-eabi-gcc-9.3.1-1.1-linux-x64.tar.gz
-RUN tar xf xpack-arm-none-eabi-gcc-9.3.1-1.1-linux-x64.tar.gz
-RUN cp -rf xpack-arm-none-eabi-gcc-9.3.1-1.1/* /usr/local/
-RUN rm -rf xpack-arm-none-eabi-gcc-9.3.1-1.1
-
-# build openocd from source
-RUN git clone https://github.com/openocd-org/openocd.git \
-    && cd openocd \
-    && ./bootstrap \ 
-    && ./configure --enable-stlink \
-    && make -j"$(nproc)" \
-    && make install-strip \
-    && cd .. \
-    && rm -rf openocd
+RUN wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
+RUN tar xf gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
+RUN cp -rf gcc-arm-none-eabi-10.3-2021.10/* /usr/local/
+RUN rm -rf gcc-arm-none-eabi-10.3-2021.10
 
 CMD bin/bash

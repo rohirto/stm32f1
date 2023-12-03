@@ -1,6 +1,23 @@
 {
   "version": "0.2.0",
   "configurations": [
+    
+    {
+      "cwd": "${workspaceRoot}",
+      "executable": "${workspaceRoot}/build/${workspaceFolderBasename}.elf",
+      "name": "STM32F1 Debug",
+      "request": "launch",
+      "type": "cortex-debug",
+      "servertype": "openocd",
+      "interface": "swd",
+      "configFiles": [
+        "/usr/share/openocd/scripts/interface/stlink-v2.cfg",
+        "/usr/share/openocd/scripts/target/stm32f1x.cfg"  //Config for F1 Boards
+      ],
+      "searchDir": [],
+      "runToEntryPoint": "main",
+      "showDevDebugOutput": "raw",
+    },
     {
       "name": "Cortex Debug",
       "cwd": "${workspaceRoot}",

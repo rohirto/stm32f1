@@ -8,5 +8,9 @@
     "stm32f4xx_hal.h": "c",
     "stm32f4xx.h": "c"
   },
-  "cortex-debug.gdbPath": "arm-none-eabi-gdb"
+  "cortex-debug.openocdPath": "/usr/bin/openocd",
+  "cortex-debug.armToolchainPath.linux": "/usr/local/bin",
+  "cortex-debug.armToolchainPath.windows": "C:\\ProgramData\\chocolatey\\bin",
+  "cortex-debug.gdbPath.linux": "/usr/local/bin//arm-none-eabi-gdb",
+  "cortex-debug.gdbPath.windows": "C:\\ProgramData\\chocolatey\\bin\\arm-none-eabi-gdb.exe"
 }
