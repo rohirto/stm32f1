@@ -12,7 +12,7 @@
       "interface": "swd",
       "configFiles": [
         "/usr/share/openocd/scripts/interface/stlink-v2.cfg",
-        "/usr/share/openocd/scripts/target/stm32f1x.cfg"  //Config for F1 Boards
+        "debug_config/stm32f1x.cfg"  //Config for F1 Boards, custom file for our cheap stlink
       ],
       "searchDir": [],
       "runToEntryPoint": "main",
