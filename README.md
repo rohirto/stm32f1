@@ -13,6 +13,15 @@ Windows doesnot allow Docker to access the USB Devices, thus ST-Link becomes una
 1. For setup of usbip on windows follow this tutorial - [https://github.com/espressif/vscode-esp-idf-extension/blob/master/docs/tutorial/using-docker-container.md]
 2. Ensure that wsl is updated - otherwise update using this tutorial - [https://superuser.com/questions/1709437/how-can-i-update-the-kernel-in-wsl2-kernel-to-latest-release]
 
+### Virtual Box
+The usbip method couldn't yield desired results, thus it was decided to shift to Virtual Box Implementation
+
+Steps:
+1. Install Virtual Box, with desired Ubuntu Image
+2. Add the Guest Additions and USB Filter (See the closed issues for this)
+3. Install Docker on it, pull this git repo
+4. Build, Flash and Debug
+
 ## Linux Setup
 
 1. Ensure that docker is installed
