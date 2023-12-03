@@ -4,7 +4,7 @@ Docker container for stm32 development..
 **This Project is a template which can be copied and modified for complex projects**
 
 ## Setup FAQs
-1. In the Dockerfile ensure that xpack-dev-tools/arm-none-eabi-gcc is to a latest version, otherwise clashes with openocd
+1. In the Dockerfile ensure that arm-none-eabi-gcc is to a latest version, otherwise clashes with openocd
 - Current GCC-ARM Version: **10.3.2021.10**
 
 ## Windows Setup (Currently Work in Progress)
