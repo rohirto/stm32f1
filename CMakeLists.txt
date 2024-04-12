@@ -6,6 +6,19 @@ set(CMAKE_CXX_COMPILER_WORKS 1)
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/build-tool/cmake/stm32_gcc.cmake)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
+#set Driver Path
+set(DRIVERS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/BSP/Drivers/STM32F1xx_HAL_Driver/Src)
+set(DRIVERS_INC ${CMAKE_CURRENT_SOURCE_DIR}/BSP/Drivers/STM32F1xx_HAL_Driver/Inc)
+
+file(GLOB SRC_FILES 
+        "${DRIVERS_PATH}/stm32f1xx_hal_uart.c"
+        "${DRIVERS_PATH}/stm32f1xx_hal_rcc.c"
+        "${DRIVERS_PATH}/stm32f1xx_hal_dma.c"
+        "${DRIVERS_PATH}/stm32f1xx_hal_cortex.c"
+        
+        
+)
+
 # set project
 project(stm32f1 C ASM)
 
@@ -21,10 +34,14 @@ find_package(CMSIS COMPONENTS STM32F10X REQUIRED)
 # Set project sources
 set(PROJECT_SOURCES
     src/main.c
+    src/uart.c
+    src/stm32f1xx_it.c
+    src/gpio.c
+    ${SRC_FILES}
 )
 
 # Set project includes
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${DRIVERS_INC})
 
 # Include HAL if required else only use CMSIS
 if (${USE_HAL})
