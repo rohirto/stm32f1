@@ -16,6 +16,8 @@
 #include "stm32f1xx_hal.h"
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 
 
 void Error_Handler(void);
