@@ -113,6 +113,8 @@ else()
     set(LIBRARIES CMSIS::STM32::F103C8)
 endif()
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,-Map,output.map")
+
 # Set the project executable
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 
