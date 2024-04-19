@@ -21,9 +21,17 @@ RUN apt-get install \
     openocd \
     libncurses5 \
     python3 \
+    python3-pip \
     bzip2 \
-    -y
+    -y \
+    && rm -rf /var/lib/apt/lists/*
 
+RUN pip3 install imgtool --break-system-packages
+
+# Install required dependencies
+#RUN apt-get update && \
+#    apt-get install -y python3 python3-pip \
+#    && rm -rf /var/lib/apt/lists/*
 # Install arm-none-eabi compiler
 RUN wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
 RUN tar xf gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
