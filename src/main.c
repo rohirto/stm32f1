@@ -1,8 +1,7 @@
 #include "main.h"
 #include "uart.h"
 #include "gpio.h"
-#include "FreeRTOS.h"
-#include "task.h"
+
 
 // Define GPIO pin for LED
 #define LED_PIN GPIO_PIN_13
@@ -11,59 +10,81 @@
 // Task function to blink the LED
 void vBlinkTask(void *pvParameters)
 {
-    // Initialize GPIO pin for LED
-    //HAL_GPIO_Init(LED_PORT, &(GPIO_InitTypeDef){LED_PIN, GPIO_MODE_OUTPUT_PP, GPIO_SPEED_FREQ_LOW, GPIO_NOPULL});
+  // Initialize GPIO pin for LED
+  // HAL_GPIO_Init(LED_PORT, &(GPIO_InitTypeDef){LED_PIN, GPIO_MODE_OUTPUT_PP, GPIO_SPEED_FREQ_LOW, GPIO_NOPULL});
+  uint8_t* debug_messagePtr;
+  for (;;)
+  {
+    // Toggle the LED state
+    HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
 
-    for (;;)
-    {
-        // Toggle the LED state
-        HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
+    sprintf((char *)pcDebugBuffer, "RTOS Task Toggle\r\n");
+    Debug_Mutex();
 
-        // Delay for 500ms (500 ticks when using the tick rate of 1kHz)
-        vTaskDelay(pdMS_TO_TICKS(500));
-    }
+    // Delay for 500ms (500 ticks when using the tick rate of 1kHz)
+    vTaskDelay(pdMS_TO_TICKS(1000));
+  }
 }
 
 int main()
 {
-	HAL_Init();
-	SystemClock_Config();
-	
-	
-	
-	blink_gpio_init();
+  HAL_Init();
+  SystemClock_Config();
+
+  blink_gpio_init();
   USART1_UART_Init();
 
   uint8_t rxbuff[20] = {0};
- 
 
-  uint8_t txData[50] = {0};
-  sprintf((char*)txData,"Clock: %ld", SystemCoreClock);  
-  HAL_UART_Transmit_IT(&huart1, txData, strlen(txData));
+  char txData[50] = {0};
+  sprintf(txData, "Clock: %d", (int)SystemCoreClock);
+  uint16_t size = strlen(txData);
+  HAL_UART_Transmit_IT(&huart1, txData, size);
 
-  HAL_UART_Receive_IT(&huart1, rxbuff, 1);
-	
-	// Create the blink task
-    xTaskCreate(vBlinkTask, "BlinkTask", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, NULL);
+  //HAL_UART_Receive_IT(&huart1, rxbuff, 1);
 
-    // Start the scheduler
-    vTaskStartScheduler();
-	
+  // Create the blink task
+  xDebugQueue = xQueueCreate( 10, 4);
+  xDebugQueueMutex = xSemaphoreCreateMutex();
+  xUART1Mutex = xSemaphoreCreateMutex();
 
-	while(1){
-		
-		//blink();
-    
-		
-	}
+   /* Check the queues and mutexes were created successfully. */
+    if( (xDebugQueue != NULL) & (xDebugQueueMutex != NULL) &  (xUART1Mutex != NULL) )
+    {
+      if(xTaskCreate(vBlinkTask, "BlinkTask", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, NULL) != pdPASS)
+      {
+        //Error
+        Error_Handler();
+      }
+      if(xTaskCreate(prvDebug_Task, "DebugTask", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, NULL) != pdPASS)
+      {
+        //Error
+        Error_Handler();
+      }
+    }
+    else
+    {
+      sprintf((char *)txData, "Tasks creation Failed\r\n");
+      HAL_UART_Transmit_IT(&huart1, txData, strlen(txData));
+    }
+  
 
-	return 0;
+  // Start the scheduler
+  vTaskStartScheduler();
+
+  while (1)
+  {
+
+    // blink();
+  }
+
+  return 0;
 }
 
 /**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
+ * @brief  This function is executed in case of error occurrence.
+ * @retval None
+ */
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
@@ -76,17 +97,17 @@ void Error_Handler(void)
 }
 
 /**
-  * @brief System Clock Configuration
-  * @retval None
-  */
+ * @brief System Clock Configuration
+ * @retval None
+ */
 void SystemClock_Config(void)
 {
-    RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
   /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
+   * in the RCC_OscInitTypeDef structure.
+   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
@@ -100,9 +121,8 @@ void SystemClock_Config(void)
   }
 
   /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+   */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;

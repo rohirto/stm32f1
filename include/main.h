@@ -19,6 +19,11 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "FreeRTOS.h"
+#include "queue.h"
+#include "task.h"
+#include "semphr.h"
+
 
 void Error_Handler(void);
 void SystemClock_Config(void);

@@ -12,9 +12,62 @@
 #include "main.h"
 #include "uart.h"
 
+
 UART_HandleTypeDef huart1;
 
 uint8_t RX1_Char = 0x00;
+
+//FreeRTOS Stuff
+//Global variables
+uint8_t pcDebugBuffer[50];
+QueueHandle_t xDebugQueue;                //Queue to Debug the bsl comm and application layer
+SemaphoreHandle_t xUART1Mutex;            // Mutex used to safeguard UART 1 Tx for debugging purpose
+//TaskHandle_t xDebug_Handle = NULL;               //task handle of prvDebug_Task
+QueueHandle_t xDebugQueue;                //Queue to Debug the bsl comm and application layer
+SemaphoreHandle_t xDebugQueueMutex;        // Mutex for safeguarding writing of debug Queue
+
+
+
+/**
+* @brief Debug_Print 
+* @param pointer to message string
+* @retval None
+* Function to print debug messages sent from different tasks
+* 
+*/
+void Debug_Print (unsigned char *pcMessage)
+{    
+
+    
+  //bsl_UART_Transmit(&huart1, (uint8_t*) pcMessage, strlen((const char *)pcMessage));
+  HAL_UART_Transmit_IT(&huart1, (uint8_t*) pcMessage, strlen((const char *)pcMessage));
+   
+}
+
+void prvDebug_Task (void* pvParameters)
+{
+    //BSLDebug_Struct xTemp;      //Temporary variable to store queue data
+    unsigned char* pcMessage;
+
+    for(;;)
+    {
+        if(xQueueReceive(xDebugQueue, &pcMessage, 0) == pdPASS)
+        {
+            /* Look up the event code */
+            Debug_Print( pcMessage );
+            
+            /* Lower its priority*/
+           // vTaskPrioritySet(NULL, 1);
+        }
+        else
+        {
+            /* Lower its priority*/
+            //vTaskPrioritySet(NULL, 1);
+        }
+        
+    }
+}
+
 
 void USART1_UART_Init(void)
 {
