@@ -1,6 +1,28 @@
 #include "main.h"
 #include "uart.h"
 #include "gpio.h"
+#include "FreeRTOS.h"
+#include "task.h"
+
+// Define GPIO pin for LED
+#define LED_PIN GPIO_PIN_13
+#define LED_PORT GPIOC
+
+// Task function to blink the LED
+void vBlinkTask(void *pvParameters)
+{
+    // Initialize GPIO pin for LED
+    //HAL_GPIO_Init(LED_PORT, &(GPIO_InitTypeDef){LED_PIN, GPIO_MODE_OUTPUT_PP, GPIO_SPEED_FREQ_LOW, GPIO_NOPULL});
+
+    for (;;)
+    {
+        // Toggle the LED state
+        HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
+
+        // Delay for 500ms (500 ticks when using the tick rate of 1kHz)
+        vTaskDelay(pdMS_TO_TICKS(500));
+    }
+}
 
 int main()
 {
@@ -21,12 +43,16 @@ int main()
 
   HAL_UART_Receive_IT(&huart1, rxbuff, 1);
 	
-	
+	// Create the blink task
+    xTaskCreate(vBlinkTask, "BlinkTask", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, NULL);
+
+    // Start the scheduler
+    vTaskStartScheduler();
 	
 
 	while(1){
 		
-		blink();
+		//blink();
     
 		
 	}
