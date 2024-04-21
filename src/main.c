@@ -15,9 +15,10 @@ int main()
   uint8_t rxbuff[20] = {0};
  
 
-  uint8_t txData[50] = {0};
-  sprintf((char*)txData,"Clock: %ld", SystemCoreClock);  
-  HAL_UART_Transmit_IT(&huart1, txData, strlen(txData));
+  // uint8_t txData[50] = {0};
+  // sprintf((char*)txData,"Clock: %ld", SystemCoreClock);  
+  // HAL_UART_Transmit_IT(&huart1, txData, strlen(txData));
+  debugLog("%s:%d","Clock", SystemCoreClock);
 
   HAL_UART_Receive_IT(&huart1, rxbuff, 1);
 	

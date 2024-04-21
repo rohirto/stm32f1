@@ -13,6 +13,9 @@
 #define __UART_H
 
 #include "main.h"
+#include <stdarg.h>
+
+#define debugLog(fmt, ...) _debugLog(fmt, ##__VA_ARGS__)
 
 
 extern UART_HandleTypeDef huart1;
@@ -21,6 +24,7 @@ void USART1_UART_Init(void);
 void HAL_UART_MspInit(UART_HandleTypeDef *huart);
 void HAL_UART_MspDeInit(UART_HandleTypeDef *huart);
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
+void _debugLog(const char *format, ...);
 
 
 

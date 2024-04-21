@@ -95,3 +95,29 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
     
   }
 }
+
+void _debugLog(const char *format, ...) 
+{
+    va_list args;
+    va_start(args, format);
+
+    // Determine the length of the formatted string
+    int length = vsnprintf(NULL, 0, format, args);
+    if (length < 0) {
+        // Error handling
+        return;
+    }
+
+    // Allocate memory for the formatted string
+    char buffer[length + 1];  // +1 for null terminator
+
+    // Format the string
+    vsnprintf(buffer, length + 1, format, args);
+
+    va_end(args);
+
+    // Transmit the formatted string via UART
+    HAL_UART_Transmit(&huart1, (uint8_t *)buffer, strlen(buffer), HAL_MAX_DELAY);
+}
+
+
