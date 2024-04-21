@@ -1,6 +1,7 @@
 #include "main.h"
 #include "uart.h"
 #include "gpio.h"
+#include "bootutil/bootutil.h"
 
 int main()
 {
@@ -20,7 +21,15 @@ int main()
   // HAL_UART_Transmit_IT(&huart1, txData, strlen(txData));
   debugLog("%s:%d","Clock", SystemCoreClock);
 
-  HAL_UART_Receive_IT(&huart1, rxbuff, 1);
+  //HAL_UART_Receive_IT(&huart1, rxbuff, 1);
+
+  //  struct boot_rsp rsp;
+  //  int rv = boot_go(&rsp);
+
+  // if (rv == 0) {
+  //   // 'rsp' contains the start address of the image
+  //   //your_platform_do_boot(&rsp);
+  // }
 	
 	
 	

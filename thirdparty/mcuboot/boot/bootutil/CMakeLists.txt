@@ -10,6 +10,8 @@ add_library(bootutil STATIC)
 target_include_directories(bootutil
     PUBLIC
         include
+        #${CMAKE_CURRENT_SOURCE_DIR}/../../../include
+        /workspaces/stm32f1/include
     PRIVATE
         src
 )

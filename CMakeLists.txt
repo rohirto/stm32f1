@@ -19,6 +19,50 @@ file(GLOB SRC_FILES
         
 )
 
+#mcuboot
+# Set MCUBoot Path
+set(MCUBOOT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/mcuboot/boot/bootutil)
+set(MCUBOOT_SRC_DIR ${MCUBOOT_PATH}/src)
+set(MCUBOOT_INC_DIR ${MCUBOOT_PATH}/include)
+set(TINYCRYPT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/mcuboot/ext/tinycrypt/lib)
+set(TINYCRYPT_SRC_DIR ${TINYCRYPT_DIR}/source)
+set(TINYCRYPT_INC_DIR ${TINYCRYPT_DIR}/include)
+
+
+set(MCUBOOT_SRC_FILES
+${MCUBOOT_SRC_DIR}/boot_record.c 
+${MCUBOOT_SRC_DIR}/bootutil_misc.c 
+${MCUBOOT_SRC_DIR}/caps.c 
+${MCUBOOT_SRC_DIR}/encrypted.c 
+${MCUBOOT_SRC_DIR}/fault_injection_hardening.c 
+${MCUBOOT_SRC_DIR}/fault_injection_hardening_delay_rng_mbedtls.c 
+${MCUBOOT_SRC_DIR}/image_ecdsa.c 
+#${MCUBOOT_SRC_DIR}/image_ec256.c 
+${MCUBOOT_SRC_DIR}/image_ed25519.c 
+${MCUBOOT_SRC_DIR}/image_rsa.c 
+${MCUBOOT_SRC_DIR}/image_validate.c 
+${MCUBOOT_SRC_DIR}/loader.c 
+${MCUBOOT_SRC_DIR}/swap_misc.c 
+${MCUBOOT_SRC_DIR}/swap_move.c 
+${MCUBOOT_SRC_DIR}/swap_scratch.c 
+${MCUBOOT_SRC_DIR}/tlv.c
+src/mcuboot_port.c
+)
+
+set(TINYCRYPT_SRC_FILES
+  ${TINYCRYPT_SRC_DIR}/aes_decrypt.c 
+  ${TINYCRYPT_SRC_DIR}/aes_encrypt.c 
+  ${TINYCRYPT_SRC_DIR}/cbc_mode.c 
+  ${TINYCRYPT_SRC_DIR}/ccm_mode.c 
+  ${TINYCRYPT_SRC_DIR}/cmac_mode.c 
+  ${TINYCRYPT_SRC_DIR}/ctr_mode.c 
+  ${TINYCRYPT_SRC_DIR}/ctr_prng.c 
+  ${TINYCRYPT_SRC_DIR}/hmac.c 
+  ${TINYCRYPT_SRC_DIR}/hmac_prng.c 
+  ${TINYCRYPT_SRC_DIR}/sha256.c 
+  ${TINYCRYPT_SRC_DIR}/utils.c
+  )
+
 # set project
 project(stm32f1 C ASM)
 
@@ -31,6 +75,9 @@ set(STM32_CUBE_F1_PATH ${CMAKE_CURRENT_SOURCE_DIR}/BSP)
 # Get CMSIS package needed for compilation
 find_package(CMSIS COMPONENTS STM32F10X REQUIRED)
 
+# mcboot
+#add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/mcuboot/boot/bootutil)
+
 # Set project sources
 set(PROJECT_SOURCES
     src/main.c
@@ -38,10 +85,12 @@ set(PROJECT_SOURCES
     src/stm32f1xx_it.c
     src/gpio.c
     ${SRC_FILES}
+    ${MCUBOOT_SRC_FILES}
+    ${TINYCRYPT_SRC_FILES}
 )
 
 # Set project includes
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${DRIVERS_INC})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${DRIVERS_INC} ${MCUBOOT_INC_DIR} ${TINYCRYPT_INC_DIR})
 
 # Include HAL if required else only use CMSIS
 if (${USE_HAL})
